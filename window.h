@@ -9,6 +9,9 @@
 #define WIDTH 600
 #define HEIGHT 400
 
+#define FONT_W 19
+#define FONT_H 37
+
 void set_background(uint8_t r, uint8_t g, uint8_t b);
 int load_sprite(const char *string);
 void draw_sprite(int sprite, int x, int y, double a);
