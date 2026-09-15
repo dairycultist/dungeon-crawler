@@ -36,14 +36,12 @@ int load_sprite(const char *string) {
 	sprite_count++;
 }
 
-void draw_sprite(int sprite, int x, int y, double a) {
+void draw_sprite(int sprite, int x, int y, double a, double scale) {
 
-	SDL_Rect dest_rect = {
-		x - sprites[sprite].w / 2,
-		y - sprites[sprite].h / 2,
-		sprites[sprite].w,
-		sprites[sprite].h
-	};
+	int w = (int) (sprites[sprite].w * scale);
+	int h = (int) (sprites[sprite].h * scale);
+
+	SDL_Rect dest_rect = { x - w / 2, y - h / 2, w, h };
 
 	SDL_RenderCopyEx(renderer, sprites[sprite].texture, NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
 }
@@ -90,7 +88,7 @@ int main(void) {
 		return 1;
 	}
 
-	SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH * 2, HEIGHT * 2, SDL_WINDOW_RESIZABLE);
+	SDL_Window *window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_W * 2, SCREEN_H * 2, SDL_WINDOW_RESIZABLE);
 
 	if (!window) {
 		fprintf(stderr, "Error creating window:\n%s\n", SDL_GetError());
@@ -104,7 +102,7 @@ int main(void) {
 		return 1;
 	}
 
-	screen_buffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, WIDTH, HEIGHT);
+	screen_buffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, SCREEN_W, SCREEN_H);
 
 	if (!screen_buffer) {
 		fprintf(stderr, "Error creating screen buffer:\n%s\n", SDL_GetError());
@@ -123,7 +121,7 @@ int main(void) {
 
 	// main loop
 	SDL_Event event = {0};
-	SDL_Rect letterbox = { 0, 0, WIDTH * 2, HEIGHT * 2 };
+	SDL_Rect letterbox = { 0, 0, SCREEN_W * 2, SCREEN_H * 2 };
 
 	while (1) {
 
@@ -136,7 +134,7 @@ int main(void) {
 			} else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
 
 				#define MIN(a, b) ((a) > (b) ? (b) : (a))
-				#define ASPECT_RATIO (WIDTH / (float) HEIGHT)
+				#define ASPECT_RATIO (SCREEN_W / (float) SCREEN_H)
 
 				// dynamically change letterbox based on screen resize
 				letterbox.w = MIN(event.window.data1, event.window.data2 * ASPECT_RATIO);
