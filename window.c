@@ -3,10 +3,17 @@
 
 #include "window.h"
 
+typedef struct {
+
+	SDL_Texture *texture;
+	int w, h;
+
+} SpriteInternal;
+
 static SDL_Renderer *renderer;
 static SDL_Texture *screen_buffer;
 
-static SDL_Texture *sprites[MAX_SPRITES];
+static SpriteInternal sprites[MAX_SPRITES];
 static int sprite_count;
 
 static SDL_Texture *font;
@@ -22,18 +29,23 @@ void set_background(uint8_t r, uint8_t g, uint8_t b) {
 
 int load_sprite(const char *string) {
 
-	sprites[sprite_count++] = IMG_LoadTexture(renderer, string);
+	sprites[sprite_count].texture = IMG_LoadTexture(renderer, string);
+
+	SDL_QueryTexture(sprites[sprite_count].texture, NULL, NULL, &sprites[sprite_count].w, &sprites[sprite_count].h);
+
+	sprite_count++;
 }
 
 void draw_sprite(int sprite, int x, int y, double a) {
 
-	int w, h;
+	SDL_Rect dest_rect = {
+		x - sprites[sprite].w / 2,
+		y - sprites[sprite].h / 2,
+		sprites[sprite].w,
+		sprites[sprite].h
+	};
 
-	SDL_QueryTexture(sprites[sprite], NULL, NULL, &w, &h);
-
-	SDL_Rect dest_rect = { x - w / 2, y - h / 2, w, h };
-
-	SDL_RenderCopyEx(renderer, sprites[sprite], NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, sprites[sprite].texture, NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
 }
 
 void draw_text(const char *string, int x, int y) {
@@ -154,7 +166,7 @@ int main(void) {
 	SDL_DestroyTexture(font);
 
 	for (int i = 0; i < sprite_count; i++)
-		SDL_DestroyTexture(sprites[i]);
+		SDL_DestroyTexture(sprites[i].texture);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
