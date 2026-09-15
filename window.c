@@ -46,7 +46,12 @@ void draw_sprite(int sprite, int x, int y, double a, double scale) {
 	SDL_RenderCopyEx(renderer, sprites[sprite].texture, NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
 }
 
-void draw_text(const char *string, int x, int y) {
+void draw_text(const char *string, int x, int y, double scale) {
+
+	float fx = x;
+	float fy = y;
+	float w = FONT_W * scale;
+	float h = FONT_H * scale;
 
 	while (*string != '\0') {
 
@@ -65,18 +70,18 @@ void draw_text(const char *string, int x, int y) {
 
 		} else if (*string == ' ') {
 
-			x += FONT_W;
+			fx += w;
 			string++;
+			
 			continue;
 		}
 
 		SDL_Rect src_rect = { sx * FONT_W, sy * FONT_H, FONT_W, FONT_H };
-		SDL_Rect dest_rect = { x, y, FONT_W, FONT_H };
+		SDL_Rect dest_rect = { (int) fx, (int) fy, w, h };
 
 		SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);
 
-		x += FONT_W;
-
+		fx += w;
 		string++;
 	}
 }
