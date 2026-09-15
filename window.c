@@ -52,30 +52,32 @@ void draw_text(const char *string, int x, int y) {
 
 	while (*string != '\0') {
 
-		int i = -1;
+		int sx = 31;
+		int sy = 0;
 
-		if (*string >= 'a' && *string <= 'z') {
+		if (*string >= 'A' && *string <= 'Z') {
 
-			i = *string - 'a';
+			sx = 1 + *string - 'A';
+			sy = 1;
 
 		} else if (*string >= '0' && *string <= '9') {
 
-			i = *string - '0' + 26;
+			sx = *string - '0' + 16;
+			sy = 0;
 
-		} else if (*string == '-' || *string == '.') {
+		} else if (*string == ' ') {
 
-			i = *string - '-' + 36;
+			x += FONT_W;
+			string++;
+			continue;
 		}
 
-		if (i != -1) {
+		SDL_Rect src_rect = { sx * FONT_W, sy * FONT_H, FONT_W, FONT_H };
+		SDL_Rect dest_rect = { x, y, FONT_W, FONT_H };
 
-			SDL_Rect src_rect = { i * 6, 0, 6, 6 };
-			SDL_Rect dest_rect = { x, y, 6, 6 };
+		SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);
 
-			SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);
-		}
-
-		x += 6;
+		x += FONT_W;
 
 		string++;
 	}
