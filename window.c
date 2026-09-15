@@ -55,28 +55,18 @@ void draw_text(const char *string, int x, int y, double scale) {
 
 	while (*string != '\0') {
 
-		int sx = 31;
-		int sy = 0;
+		int i;
 
-		if (*string >= 'A' && *string <= 'Z') {
+		if (*string >= ' ' && *string <= '~') {
 
-			sx = 1 + *string - 'A';
-			sy = 1;
-
-		} else if (*string >= '0' && *string <= '9') {
-
-			sx = *string - '0' + 16;
-			sy = 0;
-
-		} else if (*string == ' ') {
-
-			fx += w;
-			string++;
+			i = *string - ' ';
 			
-			continue;
+		} else {
+
+			i = 31; // '?'
 		}
 
-		SDL_Rect src_rect = { sx * FONT_W, sy * FONT_H, FONT_W, FONT_H };
+		SDL_Rect src_rect = { (i % 32) * FONT_W, (i / 32) * FONT_H, FONT_W, FONT_H };
 		SDL_Rect dest_rect = { (int) fx, (int) fy, w, h };
 
 		SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);

@@ -10,7 +10,9 @@ void game_init() {
 
 void game_update() {
 
-	draw_text("APPLE 123", 0, 0, 1.0 + sin(b));
+	draw_text(" !\"#$%&'()*+,-./0123456789:;<=>?", 0, 0, 0.9 + sin(b) * 0.1);
+	draw_text("@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_", 0, 40, 0.9 + sin(b) * 0.1);
+	draw_text("`abcdefghijklmnopqrstuvwxyz{|}~熏肉", 0, 80, 0.9 + sin(b) * 0.1);
 
-	b += 0.01;
+	b += 0.1;
 }
