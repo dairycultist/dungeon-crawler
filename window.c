@@ -46,6 +46,11 @@ void draw_sprite(int sprite, int x, int y, double a, double scale) {
 	SDL_RenderCopyEx(renderer, sprites[sprite].texture, NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
 }
 
+void set_text_color(Uint8 r, Uint8 g, Uint8 b) {
+
+	SDL_SetTextureColorMod(font, r, g, b);
+}
+
 void draw_text(const char *string, int x, int y, double scale) {
 
 	float fx = x;
