@@ -5,14 +5,14 @@ static double b;
 
 void game_init() {
 
-	load_sprite("./res/font.png");
+	load_sprite("./res/bg.png");
 }
 
 void game_update() {
 
-	draw_text(" !\"#$%&'()*+,-./0123456789:;<=>?", 0, 0, 0.9 + sin(b) * 0.1);
-	draw_text("@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_", 0, 40, 0.9 + sin(b) * 0.1);
-	draw_text("`abcdefghijklmnopqrstuvwxyz{|}~熏肉", 0, 80, 0.9 + sin(b) * 0.1);
+	draw_sprite(0, 300, 200, 0.0, 1.0);
+
+	draw_text("You sense a dangerous presence ahead of\nyou...", 250, 270, 0.45);
 
 	b += 0.1;
 }

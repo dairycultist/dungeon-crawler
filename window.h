@@ -10,6 +10,7 @@
 
 #define FONT_W 19
 #define FONT_H 37
+#define LINE_H 26
 
 void set_background(uint8_t r, uint8_t g, uint8_t b);
 int load_sprite(const char *string);

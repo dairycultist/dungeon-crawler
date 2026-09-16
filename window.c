@@ -60,7 +60,14 @@ void draw_text(const char *string, int x, int y, double scale) {
 		if (*string >= ' ' && *string <= '~') {
 
 			i = *string - ' ';
-			
+		
+		} else if (*string == '\n') {
+
+			fx = x;
+			fy += LINE_H;
+			string++;
+			continue;
+
 		} else {
 
 			i = 31; // '?'
