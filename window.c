@@ -10,11 +10,21 @@ typedef struct {
 
 } SpriteInternal;
 
+typedef struct {
+
+	int x1, y1, x2, y2;
+
+} ButtonInternal;
+
 static SDL_Renderer *renderer;
 static SDL_Texture *screen_buffer;
 
 static SpriteInternal sprites[MAX_SPRITES];
 static int sprite_count;
+
+static ButtonInternal buttons[MAX_BUTTONS];
+static int button_count;
+static int button_down_on = -1;
 
 static SDL_Texture *font;
 
@@ -28,6 +38,12 @@ void set_background(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 int load_sprite(const char *string) {
+
+	if (sprite_count == MAX_SPRITES) {
+
+		printf("Could not load sprite %s because ran out of space (increase the MAX_SPRITES macro!)", string);
+		exit(1);
+	}
 
 	sprites[sprite_count].texture = IMG_LoadTexture(renderer, string);
 
@@ -86,6 +102,22 @@ void draw_text(const char *string, int x, int y, double scale) {
 		fx += w;
 		string++;
 	}
+}
+
+int register_button(int x1, int y1, int x2, int y2) {
+
+	if (button_count == MAX_BUTTONS) {
+
+		printf("Could not load button because ran out of space (increase the MAX_BUTTONS macro!)");
+		exit(1);
+	}
+
+	buttons[button_count].x1 = x1;
+	buttons[button_count].y1 = y1;
+	buttons[button_count].x2 = x2;
+	buttons[button_count].y2 = y2;
+
+	button_count++;
 }
 
 int main(void) {
@@ -149,6 +181,37 @@ int main(void) {
 
 				letterbox.x = (event.window.data1 - letterbox.w) / 2;
 				letterbox.y = (event.window.data2 - letterbox.h) / 2;
+
+			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				
+				for (int i = 0; i < button_count; i++) {
+
+					if (event.button.x >= buttons[i].x1 &&
+						event.button.y >= buttons[i].y1 &&
+						event.button.x <  buttons[i].x2 &&
+						event.button.y <  buttons[i].y2
+					) {
+
+						button_down_on = i;
+						continue;
+					}
+				}
+
+			} else if (event.type == SDL_MOUSEBUTTONUP) {
+
+				if (button_down_on != -1) {
+
+					if (event.button.x >= buttons[button_down_on].x1 &&
+						event.button.y >= buttons[button_down_on].y1 &&
+						event.button.x <  buttons[button_down_on].x2 &&
+						event.button.y <  buttons[button_down_on].y2
+					) {
+
+						on_button_event(button_down_on, BUTTON_CLICK);
+					}
+
+					button_down_on = 0;
+				}
 			}
 		}
 
