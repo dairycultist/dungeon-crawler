@@ -215,6 +215,23 @@ int main(void) {
 			}
 		}
 
+		// button hovering
+		int mouse_x, mouse_y;
+		SDL_GetMouseState(&mouse_x, &mouse_y);
+
+		for (int i = 0; i < button_count; i++) {
+
+			if (mouse_x >= buttons[i].x1 &&
+				mouse_y >= buttons[i].y1 &&
+				mouse_x <  buttons[i].x2 &&
+				mouse_y <  buttons[i].y2
+			) {
+
+				on_button_event(i, BUTTON_HOVER);
+				break;
+			}
+		}
+
 		SDL_SetRenderDrawColor(renderer, 40, 40, 40, 255); 			// clear window to grey
 		SDL_RenderClear(renderer);
 		SDL_SetRenderTarget(renderer, screen_buffer); 				// set render target to screen_buffer
