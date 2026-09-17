@@ -31,8 +31,8 @@ static int text_start_x;
 static int text_end_x;
 static float text_x;
 static float text_y;
-static float text_char_w = FONT_W;
-static float text_char_h = FONT_H;
+static float text_font_w = FONT_W;
+static float text_font_h = FONT_H;
 static float text_line_h = LINE_H;
 
 static uint8_t bg_r, bg_g, bg_b;
@@ -85,8 +85,8 @@ void set_text_carriage(int start_x, int start_y, int end_x) {
 
 void set_text_scale(double scale) {
 
-	text_char_w = FONT_W * scale;
-	text_char_h = FONT_H * scale;
+	text_font_w = FONT_W * scale;
+	text_font_h = FONT_H * scale;
 	text_line_h = LINE_H * scale;
 }
 
@@ -113,18 +113,18 @@ void draw_text(const char *string) {
 		}
 
 		// check if this next character will go past end_x; if so, wrap
-		if (text_x + text_char_w >= text_end_x) {
+		if (text_x + text_font_w >= text_end_x) {
 
 			text_x = text_start_x;
 			text_y += text_line_h;
 		}
 
 		SDL_Rect src_rect = { (i % 32) * FONT_W, (i / 32) * FONT_H, FONT_W, FONT_H };
-		SDL_Rect dest_rect = { (int) text_x, (int) text_y, (int) text_char_w, (int) text_char_h };
+		SDL_Rect dest_rect = { (int) text_x, (int) text_y, (int) text_font_w, (int) text_font_h };
 
 		SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);
 
-		text_x += text_char_w;
+		text_x += text_font_w;
 		string++;
 	}
 }

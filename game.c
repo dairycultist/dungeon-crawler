@@ -16,9 +16,12 @@ void game_update() {
 
 	draw_sprite(0, 300, 200, 0.0, 1.0);
 
-	set_text_carriage(250, 270, SCREEN_W);
+	set_text_carriage(250, 270, SCREEN_W - 7);
 	set_text_color(255, 0, 0);
-	draw_text("You sense a dangerous presence ahead of\nyou...");
+	draw_text("You sense a dangerous presence ahead of you...");
+	set_text_scale(0.65);
+	draw_text(" but are you sure?");
+	set_text_scale(0.45);
 
 	set_text_carriage(445, 208, SCREEN_W);
 	set_text_color(255, 255, 255);

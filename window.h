@@ -11,7 +11,7 @@
 
 #define FONT_W 19
 #define FONT_H 37
-#define LINE_H 26
+#define LINE_H 28
 
 #define BUTTON_HOVER 0
 #define BUTTON_CLICK 1
@@ -23,6 +23,9 @@ void set_background(uint8_t r, uint8_t g, uint8_t b);
 int load_sprite(const char *string);
 void draw_sprite(int sprite, int x, int y, double a, double scale);
 
+// all three set functions must be called at least once, with set_text_carriage
+// needing to be called at least every frame (to reset the carriage back to the
+// start of the text region)
 void set_text_color(uint8_t r, uint8_t g, uint8_t b);
 void set_text_carriage(int start_x, int start_y, int end_x);
 void set_text_scale(double scale);

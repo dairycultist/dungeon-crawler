@@ -1,6 +1,6 @@
 .PHONY: run clean
 
-game.out: *.c
+game.out: *.c *.h
 	gcc -o game.out *.c -lm $(shell pkg-config --cflags --libs sdl2 SDL2_image)
 
 run: game.out
