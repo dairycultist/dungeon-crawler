@@ -59,12 +59,12 @@ int load_sprite(const char *string) {
 	return sprite_count++;
 }
 
-void draw_sprite(int sprite, int x, int y, double a, double scale) {
+void draw_sprite(int sprite, int x, int y, double pivot_x, double pivot_y, double a, double scale) {
 
 	int w = (int) (sprites[sprite].w * scale);
 	int h = (int) (sprites[sprite].h * scale);
 
-	SDL_Rect dest_rect = { x - w / 2, y - h / 2, w, h };
+	SDL_Rect dest_rect = { x - w * (pivot_x + 1.0) / 2, y - h * (pivot_y + 1.0) / 2, w, h };
 
 	SDL_RenderCopyEx(renderer, sprites[sprite].texture, NULL, &dest_rect, a, NULL, SDL_FLIP_NONE);
 }

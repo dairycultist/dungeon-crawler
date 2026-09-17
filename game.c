@@ -60,7 +60,7 @@ void game_init() {
 
 void game_update() {
 
-	draw_sprite(spr_bg, 300, 200, 0.0, 1.0);
+	draw_sprite(spr_bg, 300, 200, 0.0, 0.0, 0.0, 1.0);
 
 	Room *ahead, *left, *right, *ahead_left, *ahead_right;
 
@@ -95,24 +95,31 @@ void game_update() {
 			break;
 	}
 
-	if (!ahead_left->is_open)  draw_sprite(spr_left_corner,  118, 129, 0.0, 1.0);
-	if (!ahead_right->is_open) draw_sprite(spr_right_corner, 118, 129, 0.0, 1.0);
-	if (!left->is_open)        draw_sprite(spr_left_wall,    118, 129, 0.0, 1.0);
-	if (!right->is_open)       draw_sprite(spr_right_wall,   118, 129, 0.0, 1.0);
-	if (!ahead->is_open)       draw_sprite(spr_front_wall,   118, 129, 0.0, 1.0);
+	if (!ahead_left->is_open)  draw_sprite(spr_left_corner,  7, 6, -1.0, -1.0, 0.0, 1.0);
+	if (!ahead_right->is_open) draw_sprite(spr_right_corner, 7, 6, -1.0, -1.0, 0.0, 1.0);
+	if (!left->is_open)        draw_sprite(spr_left_wall,    7, 6, -1.0, -1.0, 0.0, 1.0);
+	if (!right->is_open)       draw_sprite(spr_right_wall,   7, 6, -1.0, -1.0, 0.0, 1.0);
+	if (!ahead->is_open)       draw_sprite(spr_front_wall,   7, 6, -1.0, -1.0, 0.0, 1.0);
 
 	if (map[player_y][player_x].occupant.sprite != -1) {
 
-		draw_sprite(map[player_y][player_x].occupant.sprite, 118, 129, 0.0, 1.0 + sin(animt * 5.0) * 0.02);
+		draw_sprite(map[player_y][player_x].occupant.sprite, 118, 230, 0.0, 0.8, 0.0, 1.0 + sin(animt * 5.0) * 0.02);
 	}
 
-	// draw occupant warning text
+	// info box
 	set_text_carriage(250, 270, SCREEN_W - 7);
-	set_text_color(255, 0, 0);
 
-	if (ahead->is_open && ahead->occupant.sprite != -1)
-		draw_text("You sense a dangerous presence ahead of you...");
+	// draw occupant warning text
+	if (ahead->is_open) {
 
+		if (ahead->occupant.sprite == spr_slime) {
+
+			set_text_color(255, 0, 0);
+			draw_text("You hear the squelching of slime ahead of you...");
+		}
+	}
+
+	// player stats
 	set_text_carriage(445, 208, SCREEN_W);
 	set_text_color(255, 255, 255);
 	draw_text("Hero lvl 3\nstats 40000");
