@@ -2,10 +2,24 @@
 #include <math.h>
 #include <stdio.h>
 
+typedef struct {
+
+	int sprite; // if -1, the occupant doesn't exist
+
+} Occupant;
+
+typedef struct {
+
+	int is_open; // if false, is a wall
+	Occupant occupant;
+
+} Room;
+
 static double b;
 
 static int spr_bg;
 static int spr_left_wall, spr_left_corner, spr_front_wall, spr_right_corner, spr_right_wall;
+static int spr_slime;
 
 static int btn_navleft, btn_navforward, btn_navright;
 
@@ -14,13 +28,7 @@ static int btn_navleft, btn_navforward, btn_navright;
 #define SOUTH 2
 #define WEST 3
 
-static int map[][5] = {
-	{1, 1, 1, 1, 1},
-	{1, 0, 0, 1, 1},
-	{1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1},
-};
+static Room map[5][5];
 static int player_x = 2, player_y = 2, player_dir = NORTH;
 
 void game_init() {
@@ -33,11 +41,21 @@ void game_init() {
 	spr_right_corner = load_sprite("./res/right_corner.png");
 	spr_right_wall   = load_sprite("./res/right_wall.png");
 
+	spr_slime = load_sprite("./res/slime.png");
+
 	btn_navleft    = register_button(1, 256, 79, 291);
 	btn_navforward = register_button(80, 256, 157, 291);
 	btn_navright   = register_button(158, 256, 236, 291);
 
 	set_text_scale(0.45);
+
+	map[1][1] = (Room){1, -1};
+	map[1][2] = (Room){1, spr_slime};
+	map[2][2] = (Room){1, -1};
+	map[2][3] = (Room){1, -1};
+	map[3][1] = (Room){1, -1};
+	map[3][2] = (Room){1, -1};
+	map[3][3] = (Room){1, -1};
 }
 
 void game_update() {
@@ -48,40 +66,45 @@ void game_update() {
 
 	switch (player_dir) {
 		case NORTH:
-			ahead       = map[player_y - 1][player_x];
-			left        = map[player_y][player_x - 1];
-			right       = map[player_y][player_x + 1];
-			ahead_left  = map[player_y - 1][player_x - 1];
-			ahead_right = map[player_y - 1][player_x + 1];
+			ahead       = map[player_y - 1][player_x].is_open;
+			left        = map[player_y][player_x - 1].is_open;
+			right       = map[player_y][player_x + 1].is_open;
+			ahead_left  = map[player_y - 1][player_x - 1].is_open;
+			ahead_right = map[player_y - 1][player_x + 1].is_open;
 			break;
 		case EAST:
-			ahead       = map[player_y][player_x + 1];
-			left        = map[player_y - 1][player_x];
-			right       = map[player_y + 1][player_x];
-			ahead_left  = map[player_y - 1][player_x + 1];
-			ahead_right = map[player_y + 1][player_x + 1];
+			ahead       = map[player_y][player_x + 1].is_open;
+			left        = map[player_y - 1][player_x].is_open;
+			right       = map[player_y + 1][player_x].is_open;
+			ahead_left  = map[player_y - 1][player_x + 1].is_open;
+			ahead_right = map[player_y + 1][player_x + 1].is_open;
 			break;
 		case SOUTH:
-			ahead       = map[player_y + 1][player_x];
-			left        = map[player_y][player_x + 1];
-			right       = map[player_y][player_x - 1];
-			ahead_left  = map[player_y + 1][player_x + 1];
-			ahead_right = map[player_y + 1][player_x - 1];
+			ahead       = map[player_y + 1][player_x].is_open;
+			left        = map[player_y][player_x + 1].is_open;
+			right       = map[player_y][player_x - 1].is_open;
+			ahead_left  = map[player_y + 1][player_x + 1].is_open;
+			ahead_right = map[player_y + 1][player_x - 1].is_open;
 			break;
 		case WEST:
-			ahead       = map[player_y][player_x - 1];
-			left        = map[player_y + 1][player_x];
-			right       = map[player_y - 1][player_x];
-			ahead_left  = map[player_y + 1][player_x - 1];
-			ahead_right = map[player_y - 1][player_x - 1];
+			ahead       = map[player_y][player_x - 1].is_open;
+			left        = map[player_y + 1][player_x].is_open;
+			right       = map[player_y - 1][player_x].is_open;
+			ahead_left  = map[player_y + 1][player_x - 1].is_open;
+			ahead_right = map[player_y - 1][player_x - 1].is_open;
 			break;
 	}
 
-	if (ahead_left)  draw_sprite(spr_left_corner,  118, 129, 0.0, 1.0);
-	if (ahead_right) draw_sprite(spr_right_corner, 118, 129, 0.0, 1.0);
-	if (left)        draw_sprite(spr_left_wall,    118, 129, 0.0, 1.0);
-	if (right)       draw_sprite(spr_right_wall,   118, 129, 0.0, 1.0);
-	if (ahead)       draw_sprite(spr_front_wall,   118, 129, 0.0, 1.0);
+	if (!ahead_left)  draw_sprite(spr_left_corner,  118, 129, 0.0, 1.0);
+	if (!ahead_right) draw_sprite(spr_right_corner, 118, 129, 0.0, 1.0);
+	if (!left)        draw_sprite(spr_left_wall,    118, 129, 0.0, 1.0);
+	if (!right)       draw_sprite(spr_right_wall,   118, 129, 0.0, 1.0);
+	if (!ahead)       draw_sprite(spr_front_wall,   118, 129, 0.0, 1.0);
+
+	if (map[player_y][player_x].occupant.sprite != -1) {
+
+		draw_sprite(map[player_y][player_x].occupant.sprite, 118, 129, 0.0, 1.0);
+	}
 
 	set_text_carriage(250, 270, SCREEN_W - 7);
 	set_text_color(255, 0, 0);
@@ -119,19 +142,19 @@ void on_button_event(int button, int state) {
 
 			switch (player_dir) {
 				case NORTH:
-					if (!map[player_y - 1][player_x])
+					if (map[player_y - 1][player_x].is_open)
 						player_y--;
 					break;
 				case EAST:
-					if (!map[player_y][player_x + 1])
+					if (map[player_y][player_x + 1].is_open)
 						player_x++;
 					break;
 				case SOUTH:
-					if (!map[player_y + 1][player_x])
+					if (map[player_y + 1][player_x].is_open)
 						player_y++;
 					break;
 				case WEST:
-					if (!map[player_y][player_x - 1])
+					if (map[player_y][player_x - 1].is_open)
 						player_x--;
 					break;
 			}
