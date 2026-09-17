@@ -8,17 +8,21 @@ void game_init() {
 
 	load_sprite("./res/bg.png");
 	register_button(0, 0, 200, 200);
+
+	set_text_scale(0.45);
 }
 
 void game_update() {
 
 	draw_sprite(0, 300, 200, 0.0, 1.0);
 
+	set_text_carriage(250, 270, SCREEN_W);
 	set_text_color(255, 0, 0);
-	draw_text("You sense a dangerous presence ahead of\nyou...", 250, 270, 0.45);
+	draw_text("You sense a dangerous presence ahead of\nyou...");
 
+	set_text_carriage(445, 208, SCREEN_W);
 	set_text_color(255, 255, 255);
-	draw_text("Hero lvl 3\nstats 40000", 445, 208, 0.45);
+	draw_text("Hero lvl 3\nstats 40000");
 
 	b += 0.1;
 }

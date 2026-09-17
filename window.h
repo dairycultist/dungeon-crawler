@@ -24,7 +24,9 @@ int load_sprite(const char *string);
 void draw_sprite(int sprite, int x, int y, double a, double scale);
 
 void set_text_color(uint8_t r, uint8_t g, uint8_t b);
-void draw_text(const char *string, int x, int y, double scale);
+void set_text_carriage(int start_x, int start_y, int end_x);
+void set_text_scale(double scale);
+void draw_text(const char *string);
 
 void game_init();
 void game_update();

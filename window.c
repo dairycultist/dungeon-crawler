@@ -27,6 +27,13 @@ static int button_count;
 static int button_down_on = -1;
 
 static SDL_Texture *font;
+static int text_start_x;
+static int text_end_x;
+static float text_x;
+static float text_y;
+static float text_char_w = FONT_W;
+static float text_char_h = FONT_H;
+static float text_line_h = LINE_H;
 
 static uint8_t bg_r, bg_g, bg_b;
 
@@ -67,12 +74,23 @@ void set_text_color(Uint8 r, Uint8 g, Uint8 b) {
 	SDL_SetTextureColorMod(font, r, g, b);
 }
 
-void draw_text(const char *string, int x, int y, double scale) {
+void set_text_carriage(int start_x, int start_y, int end_x) {
 
-	float fx = x;
-	float fy = y;
-	float w = FONT_W * scale;
-	float h = FONT_H * scale;
+	text_start_x = start_x;
+	text_end_x = end_x;
+
+	text_x = start_x;
+	text_y = start_y;
+}
+
+void set_text_scale(double scale) {
+
+	text_char_w = FONT_W * scale;
+	text_char_h = FONT_H * scale;
+	text_line_h = LINE_H * scale;
+}
+
+void draw_text(const char *string) {
 
 	while (*string != '\0') {
 
@@ -84,8 +102,8 @@ void draw_text(const char *string, int x, int y, double scale) {
 		
 		} else if (*string == '\n') {
 
-			fx = x;
-			fy += LINE_H;
+			text_x = text_start_x;
+			text_y += text_line_h;
 			string++;
 			continue;
 
@@ -94,12 +112,19 @@ void draw_text(const char *string, int x, int y, double scale) {
 			i = 31; // '?'
 		}
 
+		// check if this next character will go past end_x; if so, wrap
+		if (text_x + text_char_w >= text_end_x) {
+
+			text_x = text_start_x;
+			text_y += text_line_h;
+		}
+
 		SDL_Rect src_rect = { (i % 32) * FONT_W, (i / 32) * FONT_H, FONT_W, FONT_H };
-		SDL_Rect dest_rect = { (int) fx, (int) fy, w, h };
+		SDL_Rect dest_rect = { (int) text_x, (int) text_y, (int) text_char_w, (int) text_char_h };
 
 		SDL_RenderCopyEx(renderer, font, &src_rect, &dest_rect, 0.0, NULL, SDL_FLIP_NONE);
 
-		fx += w;
+		text_x += text_char_w;
 		string++;
 	}
 }
