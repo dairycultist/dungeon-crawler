@@ -15,7 +15,7 @@ typedef struct {
 
 } Room;
 
-static double b;
+static double animt;
 
 static int spr_bg;
 static int spr_left_wall, spr_left_corner, spr_front_wall, spr_right_corner, spr_right_wall;
@@ -62,62 +62,62 @@ void game_update() {
 
 	draw_sprite(spr_bg, 300, 200, 0.0, 1.0);
 
-	int ahead, left, right, ahead_left, ahead_right;
+	Room *ahead, *left, *right, *ahead_left, *ahead_right;
 
 	switch (player_dir) {
 		case NORTH:
-			ahead       = map[player_y - 1][player_x].is_open;
-			left        = map[player_y][player_x - 1].is_open;
-			right       = map[player_y][player_x + 1].is_open;
-			ahead_left  = map[player_y - 1][player_x - 1].is_open;
-			ahead_right = map[player_y - 1][player_x + 1].is_open;
+			ahead       = &map[player_y - 1][player_x];
+			left        = &map[player_y][player_x - 1];
+			right       = &map[player_y][player_x + 1];
+			ahead_left  = &map[player_y - 1][player_x - 1];
+			ahead_right = &map[player_y - 1][player_x + 1];
 			break;
 		case EAST:
-			ahead       = map[player_y][player_x + 1].is_open;
-			left        = map[player_y - 1][player_x].is_open;
-			right       = map[player_y + 1][player_x].is_open;
-			ahead_left  = map[player_y - 1][player_x + 1].is_open;
-			ahead_right = map[player_y + 1][player_x + 1].is_open;
+			ahead       = &map[player_y][player_x + 1];
+			left        = &map[player_y - 1][player_x];
+			right       = &map[player_y + 1][player_x];
+			ahead_left  = &map[player_y - 1][player_x + 1];
+			ahead_right = &map[player_y + 1][player_x + 1];
 			break;
 		case SOUTH:
-			ahead       = map[player_y + 1][player_x].is_open;
-			left        = map[player_y][player_x + 1].is_open;
-			right       = map[player_y][player_x - 1].is_open;
-			ahead_left  = map[player_y + 1][player_x + 1].is_open;
-			ahead_right = map[player_y + 1][player_x - 1].is_open;
+			ahead       = &map[player_y + 1][player_x];
+			left        = &map[player_y][player_x + 1];
+			right       = &map[player_y][player_x - 1];
+			ahead_left  = &map[player_y + 1][player_x + 1];
+			ahead_right = &map[player_y + 1][player_x - 1];
 			break;
 		case WEST:
-			ahead       = map[player_y][player_x - 1].is_open;
-			left        = map[player_y + 1][player_x].is_open;
-			right       = map[player_y - 1][player_x].is_open;
-			ahead_left  = map[player_y + 1][player_x - 1].is_open;
-			ahead_right = map[player_y - 1][player_x - 1].is_open;
+			ahead       = &map[player_y][player_x - 1];
+			left        = &map[player_y + 1][player_x];
+			right       = &map[player_y - 1][player_x];
+			ahead_left  = &map[player_y + 1][player_x - 1];
+			ahead_right = &map[player_y - 1][player_x - 1];
 			break;
 	}
 
-	if (!ahead_left)  draw_sprite(spr_left_corner,  118, 129, 0.0, 1.0);
-	if (!ahead_right) draw_sprite(spr_right_corner, 118, 129, 0.0, 1.0);
-	if (!left)        draw_sprite(spr_left_wall,    118, 129, 0.0, 1.0);
-	if (!right)       draw_sprite(spr_right_wall,   118, 129, 0.0, 1.0);
-	if (!ahead)       draw_sprite(spr_front_wall,   118, 129, 0.0, 1.0);
+	if (!ahead_left->is_open)  draw_sprite(spr_left_corner,  118, 129, 0.0, 1.0);
+	if (!ahead_right->is_open) draw_sprite(spr_right_corner, 118, 129, 0.0, 1.0);
+	if (!left->is_open)        draw_sprite(spr_left_wall,    118, 129, 0.0, 1.0);
+	if (!right->is_open)       draw_sprite(spr_right_wall,   118, 129, 0.0, 1.0);
+	if (!ahead->is_open)       draw_sprite(spr_front_wall,   118, 129, 0.0, 1.0);
 
 	if (map[player_y][player_x].occupant.sprite != -1) {
 
-		draw_sprite(map[player_y][player_x].occupant.sprite, 118, 129, 0.0, 1.0);
+		draw_sprite(map[player_y][player_x].occupant.sprite, 118, 129, 0.0, 1.0 + sin(animt * 5.0) * 0.02);
 	}
 
+	// draw occupant warning text
 	set_text_carriage(250, 270, SCREEN_W - 7);
 	set_text_color(255, 0, 0);
-	draw_text("You sense a dangerous presence ahead of you...");
-	set_text_scale(0.65);
-	draw_text(" but are you sure?");
-	set_text_scale(0.45);
+
+	if (ahead->is_open && ahead->occupant.sprite != -1)
+		draw_text("You sense a dangerous presence ahead of you...");
 
 	set_text_carriage(445, 208, SCREEN_W);
 	set_text_color(255, 255, 255);
 	draw_text("Hero lvl 3\nstats 40000");
 
-	b += 0.1;
+	animt += M_PI / 100.0;
 }
 
 void on_button_event(int button, int state) {
