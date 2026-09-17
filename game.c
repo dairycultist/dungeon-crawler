@@ -7,7 +7,7 @@ static double b;
 void game_init() {
 
 	load_sprite("./res/bg.png");
-	register_button(0, 0, 200, 200);
+	register_button(0, 255, 80, 292);
 
 	set_text_scale(0.45);
 }

@@ -208,6 +208,11 @@ int main(void) {
 				letterbox.y = (event.window.data2 - letterbox.h) / 2;
 
 			} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+
+				event.button.x -= letterbox.x;
+				event.button.y -= letterbox.y;
+				event.button.x = event.button.x * SCREEN_W / letterbox.w;
+				event.button.y = event.button.y * SCREEN_H / letterbox.h;
 				
 				for (int i = 0; i < button_count; i++) {
 
@@ -223,6 +228,11 @@ int main(void) {
 				}
 
 			} else if (event.type == SDL_MOUSEBUTTONUP) {
+
+				event.button.x -= letterbox.x;
+				event.button.y -= letterbox.y;
+				event.button.x = event.button.x * SCREEN_W / letterbox.w;
+				event.button.y = event.button.y * SCREEN_H / letterbox.h;
 
 				if (button_down_on != -1) {
 
@@ -243,6 +253,11 @@ int main(void) {
 		// button hovering
 		int mouse_x, mouse_y;
 		SDL_GetMouseState(&mouse_x, &mouse_y);
+
+		mouse_x -= letterbox.x;
+		mouse_y -= letterbox.y;
+		mouse_x = mouse_x * SCREEN_W / letterbox.w;
+		mouse_y = mouse_y * SCREEN_H / letterbox.h;
 
 		for (int i = 0; i < button_count; i++) {
 
