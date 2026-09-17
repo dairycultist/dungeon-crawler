@@ -56,7 +56,7 @@ int load_sprite(const char *string) {
 
 	SDL_QueryTexture(sprites[sprite_count].texture, NULL, NULL, &sprites[sprite_count].w, &sprites[sprite_count].h);
 
-	sprite_count++;
+	return sprite_count++;
 }
 
 void draw_sprite(int sprite, int x, int y, double a, double scale) {
@@ -142,7 +142,7 @@ int register_button(int x1, int y1, int x2, int y2) {
 	buttons[button_count].x2 = x2;
 	buttons[button_count].y2 = y2;
 
-	button_count++;
+	return button_count++;
 }
 
 int main(void) {
@@ -158,6 +158,8 @@ int main(void) {
 		fprintf(stderr, "Error creating window:\n%s\n", SDL_GetError());
 		return 1;
     }
+
+	SDL_SetWindowMinimumSize(window, SCREEN_W, SCREEN_H);
 
 	renderer = SDL_CreateRenderer(window, -1, 0);
 
